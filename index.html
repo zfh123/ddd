@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+	<title>手机移动端老虎机抽奖代码</title>
+
+	<script type="text/javascript" src="js/simpl-fontSize.min.js"></script>
+
+	<link rel="stylesheet" href="css/simpl-public.min.css">
+	<link rel="stylesheet" href="css/compound.min.css">
+	<link rel="stylesheet" href="http://unpkg.com/iview/dist/styles/iview.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/easing.min.js"></script>
+	<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+	<script src="http://unpkg.com/iview/dist/iview.min.js"></script>
+</head>
+<style>
+	html,body{
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+		background: #edfcfe;
+	}
+	#commain{
+		margin: 0 auto;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+		background: #edfcfe;
+	}
+	.menu{
+		position: absolute;
+    left: 0;
+    right: 0;
+    background: yellow;
+    z-index: 999;
+	}
+	.headers{
+		text-align: center;
+	}
+	.menu .headers,.space{
+		height: 41px;
+		width: 100%;
+    padding: 7px 15px 5px 0;
+    background: #0096ff;
+	}
+	.menu .nav{
+		background: #afbac2;
+	}
+	.headers .icons{
+		font-size: 30px;
+		float: right;
+	}
+	.menu .nav li{
+		text-indent: 9px;
+    line-height: 30px;
+    color: #2d8cf0;
+    z-index: 2;
+	}
+	.rule{
+		position: relative;
+	}
+	.rule .shuom{
+		position: absolute;
+    left: 61%;
+    color: #fff;
+    font-size: 15px;
+    top: 3px;
+	}
+	.rule .ivu-poptip{
+		display: block;
+	}
+	/* 样式重置 */
+	.demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
+    }
+    @keyframes ani-demo-spin {
+        from { transform: rotate(0deg);}
+        50%  { transform: rotate(180deg);}
+        to   { transform: rotate(360deg);}
+    }
+    .demo-spin-col{
+        height: 100px;
+        position: relative;
+        border: 1px solid #eee;
+    }
+	.ivu-spin-fix {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 8;
+		width: 100%;
+		height: 100%;
+		background-color: #000;
+		opacity: 0.7;
+	}
+</style>
+<body>
+	<div id="commain" class="com-main">
+		<div class="menu">
+			<Row class="headers">
+				<div style="display: inline-block;line-height: 28px;">开心打豆豆</div>
+				<Icon class="icons" :type="isShow?'navicon-round':'chevron-up'" @click="isShow=!isShow"></Icon>
+			</Row>
+			<ul v-show="!isShow" class="nav">
+				<li @click="loginModel=true">登录</li>
+				<li @click="venosaCgCoins=true">金豆转钢镚</li>
+				<li @click="coinsChgVenosa=true">钢镚转金豆</li>
+			</ul>
+		</div>
+		<div class="space"></div>
+		<ul class="coin">
+			<li class="gb">
+				<h3 v-text="coins">2559</h3>
+			</li>
+			<li class="jd">
+				<h3 v-text="venosa">2559</h3>
+			</li>
+		</ul>
+
+		<div class="slots">
+			<ul class="clearfix">
+				<li class="fl" data-type="gb" :class="isCons?'active':''" @click="isCons=true">钢镚合成</li>
+				<li class="fr" data-type="jd" :class="!isCons?'active':''" @click="isCons=false">金豆分解</li>
+			</ul>
+			<h3 v-text="isCons?'50 钢镚/次':'1 金豆/次'">10 钢镚/次</h3>
+			<dl class="clearfix">
+				<dd class="fl" :class="isCons?'gb':'jd'"></dd>
+				<dd class="fl" :class="isCons?'gb':'jd'"></dd>
+				<dd class="fl" :class="isCons?'gb':'jd'"></dd>
+			</dl>
+			<div class="play-btn" :data-type="isCons?'gb':'jd'" @click="start" :class="hasChange?'active':''"></div>
+			<div class="yg"></div>
+			<div class="rule" @click="shumModel=true"></div>
+		</div>
+		<!-- 登录注册模态框 -->
+		<Modal class="loginModel" v-model="loginModel" title="登录" :closable="false" @on-ok="login" ok-text="登录">
+			<div>
+				<p>
+					账号：
+					<input type="text" class="ivu-input" v-model="account" placeholder="请输入您的钱包地址"/>
+				</p>
+				<p>
+					密码： 
+					<input type="password" class="ivu-input" v-model="passworld" placeholder="请输入密码"/>
+				</p>
+				<p>如您暂无账号,输入钱包地址以及设置密码 平台自动帮您注册哦。</p>
+			</div>
+		</Modal>
+		<!-- 金豆转钢镚 -->
+		<Modal class="venosaCgCoins" v-model="venosaCgCoins" title="金豆转钢镚" :closable="false" @on-ok="venosaChangeCoins">
+			<div>
+				<p class="changeCoins">
+					金豆:
+					<input type="text" class="ivu-input" v-model="changeVenosaNum" placeholder="请输入您要交换的金豆数" @on-ok="coinsChangeVenosa" />
+				</p>
+				<p style="margin-top: 5px;">
+					可换取钢镚：{{changeVenosaNum*10}}
+				</p>
+			</div>
+		</Modal>
+		<!-- 钢镚转金豆 -->
+		<Modal class="coinsChgVenosa" v-model="coinsChgVenosa" title="钢镚转金豆" :closable="false">
+			<div>
+				<p class="changeCoins">
+					钢镚:
+					<input type="text" class="ivu-input" v-model="changeCoins" placeholder="请输入您要交换的钢镚数" />
+				</p>
+				<p style="margin-top: 5px;">
+					可换取金豆数：{{changeCoins/10}}
+				</p>
+			</div>
+		</Modal>
+		<!-- 说明模态框 -->
+		<Modal class="loginModel" v-model="shumModel" title="说明" :closable="false" ok-text="">
+			<p>1.本产品纯属玩乐，不具备其它非法行为</p>
+			<p>2.钢镚：本游戏基础货币</p>
+			<p>3.金豆：本游戏高级币</p>
+			<p>4.金豆：钢镚=10:1的换算率</p>
+			<p>5.每天签到会有66个钢镚的奖励哦!</p>
+			<p>6.摇到相同的数字，才算中奖哦 中奖金额等于3个相等数字!</p>
+			<p>7.奖励将在开奖结束5分钟后有系统自动派发，请您注意查收！</p>
+		</Modal>
+		<Modal class="sign" v-model="sign" title="签到领钢镚" :closable="false" @on-ok="signclick">
+			<div>
+				<p>钢镚，金豆领取</p>
+				<p>  需要您的稍微支出，就可以玩的尽兴，玩的开心，还在犹豫吗，赶快行动吧。</p>
+			</div>
+		</Modal>
+		<Spin fix v-if="spinShow">
+			<Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+			<div v-text="loading">Loading</div>
+		</Spin>
+		<!-- 交易订单记录 -->
+	</div>
+	<script src=./js/nebPay.js></script>
+  	<script src=./js/nebulas.js></script>
+	<script type="text/javascript" src="./js/index.js"></script>
+</body>
+
+</html>
