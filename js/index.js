@@ -7,7 +7,7 @@ $(function () {
   })
 });
 
-var dappAddress = "n21bJRPHYgvtZdtMJmFxpfP9KrqsQhCWSra";
+var dappAddress = "n1yv7bSzTgHhNr5AuRZwvimkQEWjv78qyND";
 var NebPay = require("nebpay");
 var nebPay = new NebPay();
 new Vue({
@@ -91,6 +91,7 @@ new Vue({
                   that.coins = data.coins;
                   that.venosa = data.venosa;
                   that.billList = data.bill;
+                  console.log(that.billList);
               }
               
           }
@@ -105,7 +106,8 @@ new Vue({
             var data = that.data;
             that.coins = data.coins;
             that.venosa = data.venosa;
-            that.billList = data.bill;        
+            that.billList = data.bill; 
+            console.log(that.billList);       
           }
       })
     },

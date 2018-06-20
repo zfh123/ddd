@@ -96,6 +96,43 @@
 		background-color: #000;
 		opacity: 0.7;
 	}
+	.ranks{
+		text-align: center;
+		font-size: 14px;
+		color: #000;
+		font-weight: 600;
+	}
+	.dataList{
+		height: 41%;
+    	background: yellow;
+		position: relative;
+		overflow: hidden;
+	}
+	.dataList .wrapper{
+		position: absolute;
+		width: 100%;
+		bottom: 0;
+		top: 0;
+		background: gray;
+		overflow-y: auto;	
+	}
+	.orderList{
+		display: flex;
+	}
+	.orderList p{
+		flex: 1;
+		text-align: center;
+	}
+	
+	.dataList .wrapper ul li{
+		display: flex;
+		line-height: 27px;
+		border-bottom: 1px solid #ccc;
+	} 
+	.dataList .wrapper ul li p{
+		flex: 1;
+		text-align: center;
+	}
 </style>
 <body>
 	<div id="commain" class="com-main">
@@ -134,6 +171,25 @@
 			<div class="play-btn" :data-type="isCons?'gb':'jd'" @click="start" :class="hasChange?'active':''"></div>
 			<div class="yg"></div>
 			<div class="rule" @click="shumModel=true"></div>
+		</div>
+		<div class="ranks">交易记录</div>
+		<div class="orderList">
+			<p>原因</p>
+			<p>金豆奖励</p>
+			<p>钢镚奖励</p>
+			<p>时间</p>
+		</div>
+		<div class="dataList">
+			<div class="wrapper">
+				<ul>
+					<li v-for="item in billList">
+						<p v-text="item.title">注册奖励</p>
+						<p v-text="item.venosa">+66</p>
+						<p v-text="item.coins">0</p>
+						<p v-text="item.time">2018-2-12</p>
+					</li>
+				</ul>
+			</div>
 		</div>
 		<!-- 登录注册模态框 -->
 		<Modal class="loginModel" v-model="loginModel" title="登录" :closable="false" @on-ok="login" ok-text="登录">
